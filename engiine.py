@@ -68,6 +68,7 @@ def train_step(model: torch.nn.Module,
 
 def train(model: torch.nn.Module, 
           train_dataloader: torch.utils.data.DataLoader,
+          val_dataloader: torch.utils.data.DataLoader,
           Accumulation_steps,
           optimizer: torch.optim.Optimizer,
           loss_fn: torch.nn.Module,
@@ -77,7 +78,9 @@ def train(model: torch.nn.Module,
 
   
   results = {"train_loss": [],
-      "train_acc": []
+      "train_acc": [],
+      "val_loss": [],
+      "val_acc": []
       
   }
   batch_cnt=0
@@ -96,17 +99,48 @@ def train(model: torch.nn.Module,
                                           exp_cnt=exp_cnt,
                                           epoch=epoch)
       
+      model.eval()
+      for batch, (X, y) in enumerate(val_dataloader):
+          
+          X, y = X.to(device), y.to(device)
+
+        # 1. Forward pass
+          y_pred = model(X)
+
+          loss = loss_fn(y_pred, y)
+
+          val_loss += loss.item()
+
+          y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
+          val_acc += (y_pred_class == y).sum().item()/len(y_pred)
+
+    # Adjust metrics to get average loss and accuracy per batch 
+          val_loss = train_loss / len(val_dataloader)
+          val_acc = train_acc / len(val_dataloader)
+
+          
+
+
+          
+      
+      
+      
 
       # Print out what's happening
       print(
           f"Epoch: {epoch+1} | "
           f"train_loss: {train_loss:.4f} | "
           f"train_acc: {train_acc:.4f} | "
+          f"val_loss: {val_loss:.4f} | "
+          f"val_acc: {val_acc:.4f} | "
           )
 
       # Update results dictionary
       results["train_loss"].append(train_loss)
       results["train_acc"].append(train_acc)
+      results["train_loss"].append(val_loss)
+      results["train_acc"].append(val_acc)
+
      
   
   return results

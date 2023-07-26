@@ -49,6 +49,7 @@ def train(config):
   # Start training with help from engine.py
   engiine.train(model=model,
                train_dataloader=train_dataloader,
+               val_dataloader=val_dataloader,
                Accumulation_steps = config.Accumulation_steps,
                loss_fn=loss_fn,
                optimizer=optimizer,
