@@ -79,9 +79,9 @@ def val_step(model: torch.nn.Module,
     val_loss, val_acc = 0, 0
 
     # Turn on inference context manager
-    with torch.inference_mode():
+   
         # Loop through DataLoader batches
-        for batch, (X, y) in enumerate(val_dataloader):
+    for batch, (X, y) in enumerate(val_dataloader):
             # Send data to target device
             X, y = X.to(device), y.to(device)
 
@@ -122,7 +122,7 @@ def train(model: torch.nn.Module,
   exp_cnt=0  
   
   for epoch in range(epochs):
-      wandb.watch(model, loss_fn, log="all", log_freq=10)
+      wandb.watch(model, loss_fn, log="all", log_freq=100)
      
       train_loss, train_acc = train_step(model=model,
                                           dataloader=train_dataloader,

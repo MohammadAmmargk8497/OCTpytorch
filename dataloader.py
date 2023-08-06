@@ -18,3 +18,23 @@ def create_dataloaders(train_dir :str, test_dir : str, val_dir : str, transform:
   val_dataloader = DataLoader(val_data, batch_size = batch_size, shuffle=True, num_workers=num_workers, pin_memory = True)
 
   return train_dataloader, test_dataloader, val_dataloader, class_names
+
+
+
+###########################to delete
+# train_dir = "C:/Users/Umair/Desktop/Balanced/train"
+# test_dir = "C:/Users/Umair/Desktop/Balanced/test"
+# val_dir  = "C:/Users/Umair/Desktop/Balanced/val"
+# data_transform = transforms.Compose([
+#   transforms.Resize((256, 256)),
+#   transforms.ToTensor()
+# ])
+
+#   # Create DataLoaders with help from data_setup.py
+# train_dataloader, test_dataloader, val_dataloader, class_names = create_dataloaders(
+#     train_dir=train_dir,
+#     test_dir=test_dir,
+#     val_dir=val_dir,
+#     transform=data_transform,
+#     batch_size=32
+# )

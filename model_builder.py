@@ -51,7 +51,7 @@ class PreNorm(nn.Module):
 
 
 class FeedForward(nn.Module):
-    def __init__(self, dim, hidden_dim, dropout=0.):
+    def __init__(self, dim, hidden_dim, dropout=0.2):
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(dim, hidden_dim),
@@ -143,7 +143,7 @@ class MV2Block(nn.Module):
                 nn.Conv2d(hidden_dim, hidden_dim, 3, stride, 1, groups=hidden_dim, bias=False),
                 nn.BatchNorm2d(hidden_dim),
                 nn.SiLU(),
-                SqueezeExcite(hidden_dim, 4 ),
+                # SqueezeExcite(hidden_dim, 4 ),
                 # pw-linear
                 nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
                 nn.BatchNorm2d(oup),
@@ -158,7 +158,7 @@ class MV2Block(nn.Module):
                 nn.Conv2d(hidden_dim, hidden_dim, 3, stride, 1, groups=hidden_dim, bias=False),
                 nn.BatchNorm2d(hidden_dim),
                 nn.SiLU(),
-                SqueezeExcite(hidden_dim,4),
+                # SqueezeExcite(hidden_dim,4),
                 # pw-linear
                 nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
                 nn.BatchNorm2d(oup),
@@ -171,7 +171,7 @@ class MV2Block(nn.Module):
             return self.conv(x)
 
 class MobileViTBlock(nn.Module):
-    def __init__(self, dim, depth, channel, kernel_size, patch_size, mlp_dim, dropout=0.):
+    def __init__(self, dim, depth, channel, kernel_size, patch_size, mlp_dim, dropout=0.2):
         super().__init__()
         self.ph, self.pw = patch_size
 
@@ -229,6 +229,8 @@ class MobileViT(nn.Module):
         self.conv2 = conv_1x1_bn(channels[-2], channels[-1])
 
         self.pool = nn.AvgPool2d(ih//32, 1)
+        
+        
         self.fc = nn.Linear(channels[-1], num_classes, bias=False)
 
     def forward(self, x):
@@ -250,6 +252,7 @@ class MobileViT(nn.Module):
         x = self.conv2(x)
 
         x = self.pool(x).view(-1, x.shape[1])
+       
         x = self.fc(x)
         return x
 
@@ -257,7 +260,7 @@ class MobileViT(nn.Module):
 def mobilevit_xxs(num_classes):
     dims = [64, 80, 96]
     channels = [16, 16, 24, 24, 48, 48, 64, 64, 80, 80, 320]
-    return MobileViT((256, 256), dims, channels, num_classes=num_classes , expansion=2)
+    return MobileViT((256, 256), dims, channels, num_classes=num_classes , expansion=8)
 
 
 def mobilevit_xs(num_classes):
