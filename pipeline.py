@@ -6,7 +6,7 @@ import pysnooper
 if  __name__ == '__main__':
   wandb.login()
   # tell wandb to get started
-  with wandb.init(project="pytorch-demo", config=configfile.callconfig()):
+  with wandb.init(project="OCT-ViT", config=configfile.callconfig()):
     print(type(configfile.callconfig()))
     # access all HPs through wandb.config, so logging matches execution!
     config=wandb.config
